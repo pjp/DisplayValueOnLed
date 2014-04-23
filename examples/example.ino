@@ -17,12 +17,13 @@
  * be in, see loop method below.
  *
  */
-DisplayValueOnLed dvol(7, 2, 10);
 
 /********************
  * Which pin to flash
  */
 const int outPin = 13; 
+
+DisplayValueOnLed dvol(outPin, 7, 2, 10);
 
 /**************************
  * Initial state of the led
@@ -32,8 +33,6 @@ boolean ledIsOn	= false;
 /////////////////////////////////////////////////////////////////////////////////////////////
 void setup() {
 	Serial.begin(9600);
-
-	pinMode(outPin, OUTPUT);      // sets the digital pin as output
 
 	Serial.println("Finished setup");
 }
@@ -45,17 +44,4 @@ void loop() {
 
 	Serial.println(ledShouldBeOn);
   
-	///////////////////////////////////////////
-	// Toggle the led if not in the right state
-	if(ledShouldBeOn) {
-		if(! ledIsOn) {
-			digitalWrite(LED_PIN, HIGH);
-			ledIsOn	=	true;
-		}
-	} else {
-		if(ledIsOn) {
-			digitalWrite(LED_PIN, LOW);
-			ledIsOn	=	false;
-		}
-	}
 }
