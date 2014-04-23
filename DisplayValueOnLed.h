@@ -8,6 +8,7 @@ class DisplayValueOnLed {
 
 	private:
 	
+	int	ledPin;
 	int ledOnCountInTicks;
 	int ledOffCountInTicks;
 	int interValueDelayInTicks;
@@ -17,29 +18,39 @@ class DisplayValueOnLed {
 	int valueCount;
 	int repeatDelayCount;
 
-	bool ledShouldBeOn;
-
 	enum State state;
 	
-	long ledSwitchedOnCount;
+	bool	ledIsOn;
 
 	int value;
 	
 	void init(
+			int pin,
 			int value,
 			int ledOnCountInTicks,
 			int ledOffCountInTicks,
 			int repeatDelayCountInTicks);
 	
 	void processTicks();
-
+	
+	void setupLED();
+	
 	void switchOnLed();
 	
 	void switchOffLed();
 	
 	public:
 
+	 /**
+	  * See comments above, this allows the off time to be specified as well.
+	  *
+	  * @param ledPin							// THe digital pin the LED is on
+	  * @param value                            // The value to display as LED flashes, this can be changed later
+	  * @param ledOnCountInTicks                // How many ticks for the LED to remain on (and off)
+	  * @param repeatDelayCountInTicks          // How many ticks between displaying the value, must be > ledOffCountInTicks
+	  */
 	DisplayValueOnLed(
+			int ledPin,
 			int value,
 			int ledOnCountInTicks,
 			int repeatDelayCountInTicks);
@@ -47,12 +58,14 @@ class DisplayValueOnLed {
 	 /**
 	  * See comments above, this allows the off time to be specified as well.
 	  *
+	  * @param ledPin							// THe digital pin the LED is on
 	  * @param value                            // The value to display as LED flashes, this can be changed later
 	  * @param ledOnCountInTicks                // How many ticks for the LED to remain on
 	  * @param ledOffCountInTicks               // How many ticks for the LED to remain off
 	  * @param repeatDelayCountInTicks               // How many ticks between displaying the value, must be > ledOffCountInTicks
 	  */
 	DisplayValueOnLed(
+			int	ledPin,
 			int value,
 			int ledOnCountInTicks,
 			int ledOffCountInTicks,

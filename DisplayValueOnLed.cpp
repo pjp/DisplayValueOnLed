@@ -1,95 +1,75 @@
 #include "DisplayValueOnLed.h"
+#include "Arduino.h"
 
 /**
  * A tick is the time between calling the tick() method. This depends on the caller.
  *
  * Assuming the tick method is to be called called every 100mS, then constructing an object such as :-
  *
- *      DisplayValueOnLed dvol   =   new DisplayValueOnLed(7, 2, 10)
+ *      DisplayValueOnLed dvol   =   new DisplayValueOnLed(13, 7, 2, 10)
  *
  *
  * means:
  *
- * we want the LED to flash 7 times, each flash will last for 200mS (and off for 200mS) then a delay of 1S
+ * we want the LED (on digital pin 13) to flash 7 times, each flash will last for 200mS (and off for 200mS) then a delay of 1S
  * before repeating the sequence.
  *
- * Note that this class DOES NOT actually manipulate the LED, it simply indicates the state that the LED should
- * be in, see the tick() and tick(newValue) methods.
- *
- *      boolean ledOn   =   false;
- *
- *      ledOn           =   dvol.tick();
- *      ledOn           =   dvol.tick();
- *      ledOn           =   dvol.tick();
- *      ledOn           =   dvol.tick();
- *
+ * @param ledPin							// The digital pin the led is on
  * @param value                            // The initial value to display as LED flashes, this can be changed later (see setValue(newValue)  and tick(newValue) )
  * @param ledOnCountInTicks                // How many ticks for the LED to remain on, off time is the same
  * @param repeatDelayCountInTicks          // How many ticks between displaying the value, must be > ledOnCountInTicks
  */
 DisplayValueOnLed::DisplayValueOnLed(
+        int ledPin,
 		int value,
 		int ledOnCountInTicks,
 		int repeatDelayCountInTicks) {
 		
-	init(value, ledOnCountInTicks, ledOnCountInTicks, repeatDelayCountInTicks);
+	init(ledPin, value, ledOnCountInTicks, ledOnCountInTicks, repeatDelayCountInTicks);
 }
 
  /**
   * See comments above, this allows the off time to be specified as well.
   *
+  * @param ledPin							// The digital pin the led is on 
   * @param value                            // The value to display as LED flashes, this can be changed later
   * @param ledOnCountInTicks                // How many ticks for the LED to remain on
   * @param ledOffCountInTicks               // How many ticks for the LED to remain off
-  * @param repeatDelayCountInTicks               // How many ticks between displaying the value, must be > ledOffCountInTicks
+  * @param repeatDelayCountInTicks          // How many ticks between displaying the value, must be > ledOffCountInTicks
   */
 DisplayValueOnLed::DisplayValueOnLed(
+        int ledPin,
 		int value,
 		int ledOnCountInTicks,
 		int ledOffCountInTicks,
 		int repeatDelayCountInTicks) {
 		
-	init(value, ledOnCountInTicks, ledOffCountInTicks, repeatDelayCountInTicks);
+	init(ledPin, value, ledOnCountInTicks, ledOffCountInTicks, repeatDelayCountInTicks);
 }
 
 void DisplayValueOnLed::init(
+        int	pin,
 		int _value,
 		int _ledOnCountInTicks,
 		int _ledOffCountInTicks,
 		int _repeatDelayCountInTicks) {
 
+	ledIsOn				= false;
 	ledOnCount           =   0;
 	ledOffCount          =   0;
 	valueCount           =   0;
 	repeatDelayCount    =   0;
 
 	state                             =   START;
-	ledShouldBeOn                   =   false;
-
-	ledSwitchedOnCount                 =   0;
-
 
 	setValue(_value);
 
-	////////////////
-	// Sanity checks
-	/*
-	if(ledOnCountInTicks < 0) {
-		throw new IllegalArgumentException("ledOnCountInTicks cannot be negative");
-	}
-
-	if(ledOffCountInTicks < 1) {
-		throw new IllegalArgumentException("ledOffCountInTicks cannot be < 1");
-	}
-
-	if(repeatDelayCountInTicks <= ledOffCountInTicks) {
-		throw new IllegalArgumentException("repeatDelayCountInTicks cannot be <= ledOffCountInTicks");
-	}
-	*/
-	
+	ledPin				   = pin;
 	ledOnCountInTicks      =   _ledOnCountInTicks;
 	ledOffCountInTicks     =   _ledOffCountInTicks;
 	interValueDelayInTicks =   _repeatDelayCountInTicks;
+	
+	setupLED();
 }
 
 /**
@@ -100,7 +80,7 @@ void DisplayValueOnLed::init(
  bool DisplayValueOnLed::tick() {
 	processTicks();
 
-	return ledShouldBeOn;
+	return ledIsOn;
 }
 
 /**
@@ -117,7 +97,7 @@ void DisplayValueOnLed::init(
 	
 	processTicks();
 
-	return ledShouldBeOn;
+	return ledIsOn;
 }
 
 /**
@@ -126,13 +106,6 @@ void DisplayValueOnLed::init(
  * @param newValue The new value to display
  */
 void DisplayValueOnLed::setValue(int newValue) {
-	////////////////
-	// Sanity checks
-	/*
-	if(value < 0) {
-		throw new IllegalArgumentException("value cannot be negative");
-	}
-	*/
 	value  =   newValue;
 }
 
@@ -148,7 +121,6 @@ void DisplayValueOnLed::processTicks() {
 			ledOffCount         =   0;
 			valueCount          =   0;
 			repeatDelayCount    =   0;
-			ledSwitchedOnCount  =   0;
 
 			if(value > 0 && ledOnCountInTicks > 0) {
 				switchOnLed();
@@ -196,11 +168,20 @@ void DisplayValueOnLed::processTicks() {
 	}
 }
 
-void DisplayValueOnLed::switchOnLed() {
-	ledShouldBeOn =   true;
-	ledSwitchedOnCount++;
-}
-void DisplayValueOnLed::switchOffLed() {
-	ledShouldBeOn =   false;
+void DisplayValueOnLed::setupLED() {
+	pinMode(ledPin, OUTPUT);
 }
 
+void DisplayValueOnLed::switchOnLed() {
+	if(! ledIsOn) {
+		digitalWrite(ledPin, HIGH);
+		ledIsOn	=	true;
+	}
+}
+
+void DisplayValueOnLed::switchOffLed() {
+	if(ledIsOn) {
+		digitalWrite(ledPin, LOW);
+		ledIsOn	=	false;
+	}
+}
