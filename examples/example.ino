@@ -5,16 +5,14 @@
  *
  * Assuming the tick method is to be called called every 100mS, then constructing an object such as :-
  *
- *      DisplayValueOnLed dvol   =   new DisplayValueOnLed(7, 2, 10)
+ *      DisplayValueOnLed dvol   =   new DisplayValueOnLed(13, 7, 2, 10)
  *
  *
  * means:
  *
- * we want the LED to flash 7 times, each flash will last for 200mS (and off for 200mS) then a delay of 1S
+ * we want the LED (on digital pin 13) to flash 7 times, each flash will last for 200mS (and off for 200mS) then a delay of 1S
  * before repeating the sequence.
  *
- * Note that this class DOES NOT actually manipulate the LED, it simply indicates the state that the LED should
- * be in, see loop method below.
  *
  */
 
