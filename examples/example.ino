@@ -23,11 +23,6 @@ const int outPin = 13;
 
 DisplayValueOnLed dvol(outPin, 7, 2, 10);
 
-/**************************
- * Initial state of the led
- */
-boolean ledIsOn	= false;
-
 /////////////////////////////////////////////////////////////////////////////////////////////
 void setup() {
 	Serial.begin(9600);
