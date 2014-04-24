@@ -60,14 +60,36 @@ void DisplayValueOnLed::init(
 	valueCount           =   0;
 	repeatDelayCount    =   0;
 
-	state                             =   START;
+	state              	=   START;
 
+
+	////////////////
+	// Sanity checks
 	setValue(_value);
 
-	ledPin				   = pin;
-	ledOnCountInTicks      =   _ledOnCountInTicks;
-	ledOffCountInTicks     =   _ledOffCountInTicks;
-	interValueDelayInTicks =   _repeatDelayCountInTicks;
+	if(pin >= 0) {
+		ledPin				   = pin;
+	} else {
+		ledPin	=	13;
+	}
+	
+	if(_ledOnCountInTicks >= 0) {
+		ledOnCountInTicks      =   _ledOnCountInTicks;
+	} else {
+		ledOnCountInTicks		=	1;		
+	}
+	
+	if(_ledOffCountInTicks >= 0) {
+		ledOffCountInTicks     =   _ledOffCountInTicks;
+	} else {
+		ledOffCountInTicks		= 1;
+	}
+	
+	if(_repeatDelayCountInTicks >= 0) {
+		interValueDelayInTicks =   _repeatDelayCountInTicks;
+	} else {
+		interValueDelayInTicks	= 2 * ledOffCountInTicks;
+	}
 	
 	setupLED();
 }
@@ -106,7 +128,13 @@ void DisplayValueOnLed::init(
  * @param newValue The new value to display
  */
 void DisplayValueOnLed::setValue(int newValue) {
-	value  =   newValue;
+	///////////////
+	// Sanity check
+	if(newValue >= 0) {
+		value  =   newValue;
+	} else {
+		value	=	1;
+	}
 }
 
 /**
