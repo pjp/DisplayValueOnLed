@@ -1,24 +1,16 @@
 #include "DisplayValueOnLed.h"
 #include "Arduino.h"
+	
+/* See header for description */
+DisplayValueOnLed::DisplayValueOnLed(
+		int ledPin,
+		int value,
+		int ledOnCountInTicks) {
+		
+	init(ledPin, value, ledOnCountInTicks, ledOnCountInTicks, DEFAULT_REPEAT_DELAY_MULTIPLIER * ledOnCountInTicks);
+}
 
-/**
- * A tick is the time between calling the tick() method. This depends on the caller.
- *
- * Assuming the tick method is to be called called every 100mS, then constructing an object such as :-
- *
- *      DisplayValueOnLed dvol   =   new DisplayValueOnLed(13, 7, 2, 10)
- *
- *
- * means:
- *
- * we want the LED (on digital pin 13) to flash 7 times, each flash will last for 200mS (and off for 200mS) then a delay of 1S
- * before repeating the sequence.
- *
- * @param ledPin							// The digital pin the led is on
- * @param value                            // The initial value to display as LED flashes, this can be changed later (see setValue(newValue)  and tick(newValue) )
- * @param ledOnCountInTicks                // How many ticks for the LED to remain on, off time is the same
- * @param repeatDelayCountInTicks          // How many ticks between displaying the value, must be > ledOnCountInTicks
- */
+/* See header for description */
 DisplayValueOnLed::DisplayValueOnLed(
         int ledPin,
 		int value,
@@ -28,15 +20,7 @@ DisplayValueOnLed::DisplayValueOnLed(
 	init(ledPin, value, ledOnCountInTicks, ledOnCountInTicks, repeatDelayCountInTicks);
 }
 
- /**
-  * See comments above, this allows the off time to be specified as well.
-  *
-  * @param ledPin							// The digital pin the led is on 
-  * @param value                            // The value to display as LED flashes, this can be changed later
-  * @param ledOnCountInTicks                // How many ticks for the LED to remain on
-  * @param ledOffCountInTicks               // How many ticks for the LED to remain off
-  * @param repeatDelayCountInTicks          // How many ticks between displaying the value, must be > ledOffCountInTicks
-  */
+/* See header for description */
 DisplayValueOnLed::DisplayValueOnLed(
         int ledPin,
 		int value,
@@ -47,6 +31,7 @@ DisplayValueOnLed::DisplayValueOnLed(
 	init(ledPin, value, ledOnCountInTicks, ledOffCountInTicks, repeatDelayCountInTicks);
 }
 
+/* See header for description */
 void DisplayValueOnLed::init(
         int	pin,
 		int _value,
@@ -88,31 +73,21 @@ void DisplayValueOnLed::init(
 	if(_repeatDelayCountInTicks >= 0) {
 		interValueDelayInTicks =   _repeatDelayCountInTicks;
 	} else {
-		interValueDelayInTicks	= 2 * ledOffCountInTicks;
+		interValueDelayInTicks	= DEFAULT_REPEAT_DELAY_MULTIPLIER * ledOffCountInTicks;
 	}
 	
 	setupLED();
 }
 
-/**
- * Call this at a regular frequency.
- 
- * @return true if the LED should be switch on; else false for it to be switched off
- */
+ /* See header for description */
  bool DisplayValueOnLed::tick() {
 	processTicks();
 
 	return ledIsOn;
 }
 
-/**
- * Call this at a regular frequency.
- 
- * @param newValue The new value to display, but ignored if the same as the current value
- * 
- * @return true if the LED should be switch on; else false for it to be switched off
- */
- bool DisplayValueOnLed::tick(int newValue) {
+/* See header for description */
+bool DisplayValueOnLed::tick(int newValue) {
 	if(newValue != value) {
 		setValue(newValue);
 	}
@@ -122,11 +97,7 @@ void DisplayValueOnLed::init(
 	return ledIsOn;
 }
 
-/**
- * Just set a new value to display.
- *
- * @param newValue The new value to display
- */
+/* See header for description */
 void DisplayValueOnLed::setValue(int newValue) {
 	///////////////
 	// Sanity check
@@ -137,9 +108,7 @@ void DisplayValueOnLed::setValue(int newValue) {
 	}
 }
 
-/**
- * Simple state machine
- */
+/* See header for description */
 void DisplayValueOnLed::processTicks() {
 
 	switch(state) {
@@ -196,10 +165,12 @@ void DisplayValueOnLed::processTicks() {
 	}
 }
 
+/* See header for description */
 void DisplayValueOnLed::setupLED() {
 	pinMode(ledPin, OUTPUT);
 }
 
+/* See header for description */
 void DisplayValueOnLed::switchOnLed() {
 	if(! ledIsOn) {
 		digitalWrite(ledPin, HIGH);
@@ -207,6 +178,7 @@ void DisplayValueOnLed::switchOnLed() {
 	}
 }
 
+/* See header for description */
 void DisplayValueOnLed::switchOffLed() {
 	if(ledIsOn) {
 		digitalWrite(ledPin, LOW);
