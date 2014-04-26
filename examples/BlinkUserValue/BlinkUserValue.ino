@@ -39,8 +39,6 @@ void setup() {
 }
 
 void loop() {
-	delay(TICK);
-
 	//////////////////////////
 	// Do some other work here 
 	//////////////////////////
@@ -67,6 +65,10 @@ void loop() {
 	//
 	// There is no overhead if the same value is passed in continuously
 	//
+	// Make sure you call the delay with the relevant value somewhere
+	// in this method.
 	///////////////////////////////////////////////////////////////////
+	delay(TICK);
+
 	dvol.tick(value);	
 }

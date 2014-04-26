@@ -30,14 +30,9 @@ const int TICK     = 100;	// milliSeconds delay
 
 /////////////////////////////////////////////////////////////////////////////////////////////
 void setup() {
-	Serial.begin(9600);
-
-	Serial.println("Finished setup");
 }
 
 void loop() {
-	delay(TICK);
-
 	//////////////////////////
 	// Do some other work here 
 	//////////////////////////
@@ -51,9 +46,10 @@ void loop() {
 	//
 	// 		tick(newValue)
 	//
+	// Make sure you call the delay with the relevant value somewhere
+	// in this method.
 	/////////////////////////////////////////////////////////
-	bool ledIsOn  =  dvol.tick();	
+	delay(TICK);
 
-	Serial.println(ledIsOn);
-  
+	dvol.tick();	
 }
