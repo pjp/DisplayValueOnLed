@@ -1,6 +1,6 @@
 #include "DisplayValueOnLed.h"
 #include "Arduino.h"
-	
+
 /* See header for description */
 DisplayValueOnLed::DisplayValueOnLed(
 		int ledPin,
@@ -33,7 +33,7 @@ DisplayValueOnLed::DisplayValueOnLed(
 
 /* See header for description */
 void DisplayValueOnLed::init(
-        int	pin,
+        int	_pin,
 		int _value,
 		int _ledOnCountInTicks,
 		int _ledOffCountInTicks,
@@ -47,34 +47,11 @@ void DisplayValueOnLed::init(
 
 	state              	=   START;
 
-
-	////////////////
-	// Sanity checks
+	setLedPin(_pin);
 	setValue(_value);
-
-	if(pin >= 0) {
-		ledPin				   = pin;
-	} else {
-		ledPin	=	13;
-	}
-	
-	if(_ledOnCountInTicks >= 0) {
-		ledOnCountInTicks      =   _ledOnCountInTicks;
-	} else {
-		ledOnCountInTicks		=	1;		
-	}
-	
-	if(_ledOffCountInTicks >= 0) {
-		ledOffCountInTicks     =   _ledOffCountInTicks;
-	} else {
-		ledOffCountInTicks		= 1;
-	}
-	
-	if(_repeatDelayCountInTicks >= 0) {
-		interValueDelayInTicks =   _repeatDelayCountInTicks;
-	} else {
-		interValueDelayInTicks	= DEFAULT_REPEAT_DELAY_MULTIPLIER * ledOffCountInTicks;
-	}
+	setLedOnCountInTicks(_ledOnCountInTicks);
+	setLedOffCountInTicks(_ledOffCountInTicks);
+	setRepeatDelayCountInTicks(_repeatDelayCountInTicks);
 	
 	setupLED();
 }
@@ -97,8 +74,31 @@ bool DisplayValueOnLed::tick(int newValue) {
 	return ledIsOn;
 }
 
+///////////////////////////////////////////////////////////////////
+// Setters and Getters
+///////////////////////////////////////////////////////////////////
+
 /* See header for description */
-void DisplayValueOnLed::setValue(int newValue) {
+bool DisplayValueOnLed::setLedPin(int newValue) {
+	if(value >= 0) {
+		ledPin				   = newValue;
+	} else {
+		ledPin	=	13;
+	}
+	
+	setupLED();
+	
+	return ledPin == newValue;
+}
+
+/* See header for description */
+int DisplayValueOnLed::getLedPin() {
+	return ledPin;
+}
+
+
+/* See header for description */
+bool DisplayValueOnLed::setValue(int newValue) {
 	///////////////
 	// Sanity check
 	if(newValue >= 0) {
@@ -106,7 +106,86 @@ void DisplayValueOnLed::setValue(int newValue) {
 	} else {
 		value	=	1;
 	}
+	
+	return value == newValue;
 }
+
+/* See header for description */
+int DisplayValueOnLed::getValue() {
+	return value;
+}
+
+
+/* See header for description */
+bool DisplayValueOnLed::setLedOnCountInTicks(int newValue) {
+	if(newValue >= 0) {
+		ledOnCountInTicks      =   newValue;
+	} else {
+		ledOnCountInTicks		=	1;		
+	}
+	
+	return ledOnCountInTicks == newValue;
+}
+
+/* See header for description */
+int DisplayValueOnLed::getLedOnCountInTicks() {
+	return ledOnCountInTicks;
+}
+
+
+/* See header for description */
+bool DisplayValueOnLed::setLedOffCountInTicks(int newValue) {
+	if(newValue >= 0) {
+		ledOffCountInTicks      =   newValue;
+	} else {
+		ledOffCountInTicks		=	1;		
+	}
+	
+	return ledOffCountInTicks == newValue;
+}
+
+/* See header for description */
+int DisplayValueOnLed::getLedOffCountInTicks() {
+	return ledOffCountInTicks;
+}
+
+
+bool DisplayValueOnLed::setRepeatDelayCountInTicks(int newValue) {
+	if(newValue >= 0) {
+		interValueDelayInTicks =   newValue;
+	} else {
+		interValueDelayInTicks	= DEFAULT_REPEAT_DELAY_MULTIPLIER * ledOffCountInTicks;
+	}
+	
+	return interValueDelayInTicks == newValue;
+}
+
+/* See header for description */
+int DisplayValueOnLed::getRepeatDelayCountInTicks() {
+	return interValueDelayInTicks;
+}
+
+void DisplayValueOnLed::toString(String &str) {
+	str += "LED pin [";
+	str += ledPin;
+	
+	str += "], value [";
+	str += value;
+	
+	str += "], on count [";
+	str += ledOnCountInTicks;
+	
+	str += "], off count [";
+	str += ledOffCountInTicks;
+	
+	str += "], delay count [";
+	str += interValueDelayInTicks;
+	str += "]";
+}
+
+///////////////////////////////////////////////////////////////////
+// End of Setters and Getters
+///////////////////////////////////////////////////////////////////
 
 /* See header for description */
 void DisplayValueOnLed::processTicks() {

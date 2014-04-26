@@ -121,12 +121,79 @@ class DisplayValueOnLed {
 	bool tick(int newValue);
 
 	/************************************************
-	 * Set a value to display - will reset the state.
+	 * Set a value to display.
 	 *
-	 * @param value The new value to display
+	 * @param newValue The new value to display
+	 *
+	 * @return true if the new value was accepted; false if a default was applied
 	 */
-	void setValue(int newValue);
+	bool setValue(int newValue);
 	
+	/*************
+	 * Get the current value being displayed on the LED
+	 */
+	int  getValue();
+	
+	/************************************************
+	 * Set the digital pin the LED is connected to
+	 *
+	 * @param newValue The new digital pin
+	 *
+	 * @return true if the new value was accepted; false if a default was applied
+	 */
+	bool setLedPin(int newValue);
+
+	/*************
+	 * Get the current value for the LED pin
+	 */
+	int  getLedPin();
+	
+	/************************************************
+	 * Set the LED ON count in ticks
+	 *
+	 * @param newValue The new LED ON count
+	 *
+	 * @return true if the new value was accepted; false if a default was applied
+	 */
+	bool setLedOnCountInTicks(int newValue);
+
+	/*************
+	 * Get the current value for the LED ON count in ticks
+	 */
+	int  getLedOnCountInTicks();
+	
+	/************************************************
+	 * Set the LED OFF count in ticks
+	 *
+	 * @param newValue The new LED OFF count
+	 *
+	 * @return true if the new value was accepted; false if a default was applied
+	 */
+	bool setLedOffCountInTicks(int newValue);
+
+	/*************
+	 * Get the current value for the LED OF count in ticks
+	 */
+	int  getLedOffCountInTicks();
+	
+	/************************************************
+	 * Set the delay repeat count in ticks
+	 *
+	 * @param newValue The new delay repeat count
+	 *
+	 * @return true if the new value was accepted; false if a default was applied
+	 */
+	bool setRepeatDelayCountInTicks(int newValue);
+
+	/*************
+	 * Get the current value for the delay repeat count in ticks
+	 */
+	int  getRepeatDelayCountInTicks();
+	
+	/********************************************
+	 * Get a String representation of this object
+	 */
+	void toString(String &value);
 	
 	/****************************************************************************************************************************************
 	* PRIVATE definitions follow, for use by the class itself, not exposed to the users of the created object.

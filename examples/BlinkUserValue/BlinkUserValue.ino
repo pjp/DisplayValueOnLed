@@ -35,7 +35,7 @@ int newValue		= 0;
 void setup() {
 	Serial.begin(9600);
 
-	Serial.println("Finished setup - enter a number then v to change LED display value");
+	Serial.println("Finished setup - enter a number then v to change LED display value, or ? to display current parameters");
 }
 
 void loop() {
@@ -52,6 +52,10 @@ void loop() {
 			newValue	= 0;
 			Serial.print("Setting LED display value to ");
 			Serial.println(value);
+		} else if(ch == '?') {
+			String me;
+			dvol.toString(me);
+			Serial.println(me);
 		}
     }
 	
