@@ -35,12 +35,18 @@ int newValue		= 0;
 void setup() {
 	Serial.begin(9600);
 
-	Serial.println("Finished setup - enter a number then v to change LED display value, or ? to display current parameters");
+	Serial.println("Setup complete");
+
+	displayValues();
+	
+	showHelp();
 }
 
 void loop() {
+	bool setOk	=	false;
+	
 	//////////////////////////
-	// Do some other work here 
+	// Check for commands 
 	//////////////////////////
 	if ( Serial.available()) {
 		char ch = Serial.read();
@@ -48,14 +54,29 @@ void loop() {
 		if(ch >= '0' && ch <= '9'){             		// is ch a number?
 			newValue = (newValue * 10) + (ch - '0');    // yes, accumulate the value
 		} else if(ch == 'v'){
-			value = newValue;							// Set new value to display
+			setOk	=	dvol.setValue(newValue);
+			checkParamWasSet(setOk);
 			newValue	= 0;
-			Serial.print("Setting LED display value to ");
-			Serial.println(value);
+			displayValues();
+		} else if(ch == 'o') {
+			setOk	=	dvol.setLedOnCountInTicks(newValue);
+			checkParamWasSet(setOk);
+			newValue	= 0;
+			displayValues();
+		} else if(ch == 'O') {
+			setOk	=	dvol.setLedOffCountInTicks(newValue);
+			checkParamWasSet(setOk);
+			newValue	= 0;
+			displayValues();
+		} else if(ch == 'd') {
+			setOk	=	dvol.setRepeatDelayCountInTicks(newValue);
+			checkParamWasSet(setOk);
+			newValue	= 0;
+			displayValues();
 		} else if(ch == '?') {
-			String me;
-			dvol.toString(me);
-			Serial.println(me);
+			newValue	= 0;
+			showHelp();
+			displayValues();
 		}
     }
 	
@@ -65,7 +86,7 @@ void loop() {
 	//
 	// If the value to be displayed changes at any time, call
 	//
-	// 		tick(newValue)
+	// 		tick(newValue) or dvol.setValue(newValue)
 	//
 	// There is no overhead if the same value is passed in continuously
 	//
@@ -74,5 +95,26 @@ void loop() {
 	///////////////////////////////////////////////////////////////////
 	delay(TICK);
 
-	dvol.tick(value);	
+	dvol.tick();	
+}
+
+void checkParamWasSet(bool setOk) {
+	if(! setOk) {
+		Serial.println("Invalid parameter value entered - ignored");
+	}
+}
+
+void showHelp() {
+	Serial.println("Enter a number then a command letter:-");
+	Serial.println("v - change the value displayed on the LED");
+	Serial.println("o - change the ON tick count for the LED");
+	Serial.println("O - change the OFF tick count for the LED");
+	Serial.println("d - change the delay tick count between displaying the value on the LED");
+	Serial.println("? - show this help and display the current state of the LED object");
+}
+
+void displayValues() {
+	String me;
+	dvol.toString(me);
+	Serial.println(me);
 }
